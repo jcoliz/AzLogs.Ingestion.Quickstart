@@ -19,7 +19,6 @@ In order to follow the instructions shown here, and run this sample, you will fi
 * [Azure CLI tool with Bicep](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/install#azure-cli)
 
 Please read through the [Logs Ingestion API in Azure Monitor](https://learn.microsoft.com/en-us/azure/azure-monitor/logs/logs-ingestion-api-overview) article carefully before proceeding.
-This sample will first follow that article closely, before moving on to demonstrate publishing an Azure Function.
 
 ## Register a Microsoft Entra app
 
