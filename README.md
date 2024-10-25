@@ -1,5 +1,7 @@
 # AzLogs.Ingestion.Quickstart Sample
 
+[![Build](https://github.com/jcoliz/AzLogs.Ingestion.Quickstart/actions/workflows/build.yml/badge.svg)](https://github.com/jcoliz/AzLogs.Ingestion.Quickstart/actions/workflows/build.yml)
+
 This sample is a quick way to get started using the [Logs Ingestion API in Azure Monitor](https://learn.microsoft.com/en-us/azure/azure-monitor/logs/logs-ingestion-api-overview) on .NET 8.0.
 The sample retrieves weather forecasts from the U.S. [National Weather Service API](https://www.weather.gov/documentation/services-web-api), then forwards them on to a [Logs Analytics Workspace](https://learn.microsoft.com/en-us/azure/azure-monitor/logs/log-analytics-workspace-overview) using a [Data Collection Rule](https://learn.microsoft.com/en-us/azure/azure-monitor/essentials/data-collection-rule-overview).
 
