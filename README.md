@@ -94,6 +94,36 @@ Now that your connection is configured, you can run the sample to see the log up
 ```powershell
 dotnet run --project ConsoleApp
 
+Press Ctrl-C to exit
+OK. Received 14 forecasts
+OK. Uploaded status 204
+OK. Received 14 forecasts
+OK. Uploaded status 204
 OK. Received 14 forecasts
 OK. Uploaded status 204
 ```
+
+## Verify data flow
+
+After observing that logs are sent successfully to Log Analytics from the client application logs, it's time to turn our attention
+to verifying the data has landed correctly in the service. Using the Azure Portal, navigate to the resource group you created above, e.g. `azlogs-ingestion`, then click into the Data Change Rule resource. In the navigation panel on the left, expand "Monitoring", then choose "Metrics". Click "Add Metric", then choose "Logs Ingestion Requests per Min". You should see a chart like the one below:
+
+![Data Change Rule Metrics](./docs/images/dcr-metrics.png)
+
+Next, we can look at the Log Analytics workspace itself to confirm that the logs have landed in their final destination. Again, navigate to the resource group page, but this time click into the Log Analytics resource. Click "Logs", and then enter this query:
+
+```kql
+Forecasts_CL
+| summarize Count = count() by bin(TimeGenerated, 1min)
+| render timechart 
+```
+
+If all is well, you will see a chart like the one below:
+
+![Log Analytics Workspace Query](./docs/images/logs-query.png)
+
+## Next step: Production!
+
+Congratulations, you have successfully ingested logs into a Log Analytics Workspace custom table using a Data Collection Rule!
+
+Commonly this logic will be deployed as an Azure Function app. Please continue on to see the production-ready end-to-end sample of this same logic built as a function app: [AzLogs.Ingestion](https://github.com/jcoliz/AzLogs.Ingestion).
