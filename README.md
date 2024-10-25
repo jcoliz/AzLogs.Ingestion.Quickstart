@@ -25,7 +25,7 @@ This sample will first follow that article closely, before moving on to demonstr
 
 The very first step is to [Register an application with the Microsoft Identity Platform](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-register-app?tabs=client-secret). 
 
-From a PowerShell window in this folder, simply run the Create-AppRegistration.ps1 script.
+From a PowerShell window in this folder, run the `Create-AppRegistration.ps1` script:
 
 ```dotnetcli
 .\scripts\Create-AppRegistration -Name "azlogs-ingestion-quickstart"
@@ -55,8 +55,7 @@ Be sure to clone this repo with submodules so you have the [AzDeploy.Bicep](http
 git clone --recurse-submodules https://github.com/jcoliz/AzLogs.Ingestion.Quickstart.git
 ```
 
-From a PowerShell window in this folder, simply run the Deploy-Services.ps1 script. You'll need to supply the `principal_id` for your app, from the previous step.
-Also, feel free to choose any resource group name and Azure data center location:
+From a PowerShell window in this folder, run the `Deploy-Services.ps1 script`. Be sure to supply the `principal_id` for your app, from the previous step. Also, feel free to choose any resource group name and Azure data center location:
 
 ```dotnetcli
 ./scripts/Deploy-Services -ResourceGroup "azlogs-ingestion-quickstart" -Location "West US 2" -ServicePrincipal "<principal_id>"
@@ -75,7 +74,7 @@ DcrImmutableId = "<data_collection_rule_id>"
 
 Once you have deployed your Azure resources, you'll need to configure the sample with the App Registration you completed initially,
 as well as the details on your Data Collection Rule. In this sample, we'll create a `config.toml` to contain these secrets in the [ConsoleApp](./ConsoleApp/) folder. This file will not be committed to source control.
-To begin, copy the existing [config.template.toml](./ConsoleApp/config.template.toml) file to a new file named `config.toml`. Then fill this in with the values unique to your deployment.
+To begin, copy the existing [config.template.toml](./ConsoleApp/config.template.toml) file to a new file named `config.toml`. Then fill this in with the values displayed from the scripts you ran earlier.
 
 ```toml
 [Identity]
