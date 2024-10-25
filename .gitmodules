@@ -1,0 +1,3 @@
+[submodule ".azure/deploy/AzDeploy.Bicep"]
+	path = .azure/deploy/AzDeploy.Bicep
+	url = https://github.com/jcoliz/AzDeploy.Bicep
