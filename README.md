@@ -23,13 +23,15 @@ This sample will first follow that article closely, before moving on to demonstr
 
 ## Register a Microsoft Entra app
 
-The very first step is to [Register an application with the Microsoft Identity Platform](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-register-app?tabs=client-secret). From a PowerShell window in this folder, simply run the Create-AppRegistration.ps1 script.
+The very first step is to [Register an application with the Microsoft Identity Platform](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-register-app?tabs=client-secret). 
+
+From a PowerShell window in this folder, simply run the Create-AppRegistration.ps1 script.
 
 ```dotnetcli
 .\scripts\Create-AppRegistration -Name "azlogs-ingestion-quickstart"
 ```
 
-After completion, this script will display configuration values you'll need later to configure the app.
+After completion, this script will display configuration values you'll need later to configure the app, _e.g._
 
 ```toml
 [Identity]
@@ -38,7 +40,7 @@ AppId = "<client_id>"
 AppSecret = "<client_secret>" 
 ```
 
-Additionally, it will display the Service Principal ID needed when deploying Azure resources, next:
+Additionally, it will display the Service Principal ID needed when deploying Azure resources, next, _e.g._
 
 ```powershell
 -ServicePrincipal <principal_id>
@@ -60,7 +62,7 @@ Also, feel free to choose any resource group name and Azure data center location
 ./scripts/Deploy-Services -ResourceGroup "azlogs-ingestion-quickstart" -Location "West US 2" -ServicePrincipal "<principal_id>"
 ```
 
-After completion, this script will display configuration values you'll need in the next step.
+After completion, this script will display configuration values you'll need in the next step, _e.g._
 
 ```toml
 [LogIngestion]
