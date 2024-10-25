@@ -38,22 +38,37 @@ var credential = new ClientSecretCredential
 var logsClient = new LogsIngestionClient(logsOptions.EndpointUri, credential);
 
 //
-// Fetch forecasts
+// Loop until cancelled
 //
 
-var forecasts = await weatherClient.Gridpoint_ForecastAsync(NWSForecastOfficeId.SEW,124,69);
+Console.WriteLine("Press Ctrl-C to exit");
 
-Console.WriteLine($"OK. Received {forecasts.Properties.Periods.Count} forecasts");
+while(true)
+{
+    //
+    // Fetch forecasts
+    //
 
-//
-// Upload logs
-//
+    var forecasts = await weatherClient.Gridpoint_ForecastAsync(NWSForecastOfficeId.SEW,124,69);
 
-var response = await logsClient.UploadAsync
-(
-    logsOptions.DcrImmutableId,
-    logsOptions.Stream, 
-    [forecasts.Properties.Periods.FirstOrDefault()]
-);
+    Console.WriteLine($"OK. Received {forecasts.Properties.Periods.Count} forecasts");
 
-Console.WriteLine($"OK. Uploaded status {response.Status}");
+    //
+    // Upload logs
+    //
+
+    var response = await logsClient.UploadAsync
+    (
+        logsOptions.DcrImmutableId,
+        logsOptions.Stream, 
+        [forecasts.Properties.Periods.FirstOrDefault()]
+    );
+
+    Console.WriteLine($"OK. Uploaded status {response.Status}");
+
+    //
+    // Wait
+    //
+
+    await Task.Delay(TimeSpan.FromSeconds(5));
+}
