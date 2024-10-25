@@ -68,3 +68,32 @@ EndpointUri = "<data_collection_endpoint_uri>"
 Stream = "<stream_name>" 
 DcrImmutableId = "<data_collection_rule_id>"
 ```
+
+## Configuration
+
+Once you have deployed your Azure resources, you'll need to configure the sample with the App Registration you completed initially,
+as well as the details on your Data Collection Rule. In this sample, we'll create a `config.toml` to contain these secrets in the [ConsoleApp](./ConsoleApp/) folder. This file will not be committed to source control.
+To begin, copy the existing [config.template.toml](./ConsoleApp/config.template.toml) file to a new file named `config.toml`. Then fill this in with the values unique to your deployment.
+
+```toml
+[Identity]
+TenantId = "<tenant_id>" # Directory (tenant) ID
+AppId = "<client_id>" # Application (client) ID
+AppSecret = "<client_secret>" # Client secret value
+
+[LogIngestion]
+EndpointUri = "<data_collection_endpoint_uri>" # Data collection endpoint, be sure to include https://
+Stream = "<stream_name>" # The stream name to send to, usually `Custom-<table>_CL`
+DcrImmutableId = "<data_collection_rule_id>" # The Immutable ID for this Data Collection Rule 
+```
+
+## Run the sample
+
+Now that your connection is configured, you can run the sample to see the log upload in action:
+
+```powershell
+dotnet run --project ConsoleApp
+
+OK. Received 14 forecasts
+OK. Uploaded status 204
+```

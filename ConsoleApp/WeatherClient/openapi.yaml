@@ -1,0 +1,529 @@
+openapi: 3.0.3
+info:
+  title: 'weather.gov API'
+  description: 'weather.gov API'
+  version: 1.13.1
+servers:
+  -
+    url: 'https://api.weather.gov'
+    description: 'Production server'
+paths:
+  '/gridpoints/{wfo}/{x},{y}/forecast':
+    get:
+      description: 'Returns a textual forecast for a 2.5km grid area'
+      operationId: Gridpoint_Forecast
+      responses:
+        200:
+          $ref: '#/components/responses/GridpointForecast'
+        default:
+          $ref: '#/components/responses/Error'
+    parameters:
+      -
+        $ref: '#/components/parameters/GridpointWFO'
+      -
+        $ref: '#/components/parameters/GridpointX'
+      -
+        $ref: '#/components/parameters/GridpointY'
+components:
+  schemas:
+    JsonLdContext:
+      type: array
+      items: {  }  
+    NWSForecastOfficeId:
+      enum:
+        - AKQ
+        - ALY
+        - BGM
+        - BOX
+        - BTV
+        - BUF
+        - CAE
+        - CAR
+        - CHS
+        - CLE
+        - CTP
+        - GSP
+        - GYX
+        - ILM
+        - ILN
+        - LWX
+        - MHX
+        - OKX
+        - PBZ
+        - PHI
+        - RAH
+        - RLX
+        - RNK
+        - ABQ
+        - AMA
+        - BMX
+        - BRO
+        - CRP
+        - EPZ
+        - EWX
+        - FFC
+        - FWD
+        - HGX
+        - HUN
+        - JAN
+        - JAX
+        - KEY
+        - LCH
+        - LIX
+        - LUB
+        - LZK
+        - MAF
+        - MEG
+        - MFL
+        - MLB
+        - MOB
+        - MRX
+        - OHX
+        - OUN
+        - SHV
+        - SJT
+        - SJU
+        - TAE
+        - TBW
+        - TSA
+        - ABR
+        - APX
+        - ARX
+        - BIS
+        - BOU
+        - CYS
+        - DDC
+        - DLH
+        - DMX
+        - DTX
+        - DVN
+        - EAX
+        - FGF
+        - FSD
+        - GID
+        - GJT
+        - GLD
+        - GRB
+        - GRR
+        - ICT
+        - ILX
+        - IND
+        - IWX
+        - JKL
+        - LBF
+        - LMK
+        - LOT
+        - LSX
+        - MKX
+        - MPX
+        - MQT
+        - OAX
+        - PAH
+        - PUB
+        - RIW
+        - SGF
+        - TOP
+        - UNR
+        - BOI
+        - BYZ
+        - EKA
+        - FGZ
+        - GGW
+        - HNX
+        - LKN
+        - LOX
+        - MFR
+        - MSO
+        - MTR
+        - OTX
+        - PDT
+        - PIH
+        - PQR
+        - PSR
+        - REV
+        - SEW
+        - SGX
+        - SLC
+        - STO
+        - TFX
+        - TWC
+        - VEF
+        - AER
+        - AFC
+        - AFG
+        - AJK
+        - ALU
+        - GUM
+        - HPA
+        - HFO
+        - PPG
+        - STU
+        - NH1
+        - NH2
+        - ONA
+        - ONP
+      type: string
+      description: 'Three-letter identifier for a NWS office.'
+    ISO8601Interval:
+      oneOf:
+        -
+          pattern: '^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(Z|[+-]\d{2}:?\d{2}?)|NOW)\/(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(Z|[+-]\d{2}:?\d{2}?)|NOW)$'
+          type: string
+          example: '2007-03-01T13:00:00Z/2008-05-11T15:30:00Z'
+        -
+          pattern: '^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(Z|[+-]\d{2}:?\d{2}?)|NOW)\/P(\d+Y)?(\d+M)?(\d+D)?(T(\d+H)?(\d+M)?(\d+S)?)?$'
+          type: string
+          example: '2007-03-01T13:00:00Z/P1Y2M10DT2H30M'
+        -
+          pattern: '^P(\d+Y)?(\d+M)?(\d+D)?(T(\d+H)?(\d+M)?(\d+S)?)?\/(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(Z|[+-]\d{2}:?\d{2}?)|NOW)$'
+          type: string
+          example: 'P1Y2M10DT2H30M/2008-05-11T15:30:00Z'
+      description: "A time interval in ISO 8601 format. This can be one of:\n\n    1. Start and end time\n    2. Start time and duration\n    3. Duration and end time\nThe string \"NOW\" can also be used in place of a start/end time.\n"
+    GridpointForecastPeriod:
+      type: object
+      properties:
+        number:
+          minimum: 1
+          type: integer
+          description: 'Sequential period number.'
+        name:
+          type: string
+          description: "A textual identifier for the period. This value will not be present for hourly forecasts.\n"
+          example: 'Tuesday Night'
+        startTime:
+          type: string
+          description: 'The starting time that this forecast period is valid for.'
+          format: date-time
+        endTime:
+          type: string
+          description: 'The ending time that this forecast period is valid for.'
+          format: date-time
+        isDaytime:
+          type: boolean
+          description: 'Indicates whether this period is daytime or nighttime.'
+        temperature:
+          type: integer
+          description: "High/low temperature for the period, depending on whether the period is day or night.\nThis property as an integer value is deprecated. Future versions will express this value as a quantitative value object. To make use of the future standard format now, set the \"forecast_temperature_qv\" feature flag on the request.\n"
+        temperatureUnit:
+          enum:
+            - F
+            - C
+          type: string
+          description: "The unit of the temperature value (Fahrenheit or Celsius).\nThis property is deprecated. Future versions will indicate the unit within the quantitative value object for the temperature property. To make use of the future standard format now, set the \"forecast_temperature_qv\" feature flag on the request.\n"
+          deprecated: true
+        temperatureTrend:
+          type: string
+          description: "If not null, indicates a non-diurnal temperature trend for the period (either rising temperature overnight, or falling temperature during the day)\n"
+          nullable: true
+        probabilityOfPrecipitation:
+          $ref: '#/components/schemas/QuantitativeValue'
+        dewpoint:
+          $ref: '#/components/schemas/QuantitativeValue'
+        relativeHumidity:
+          $ref: '#/components/schemas/QuantitativeValue'
+        windSpeed:
+          type: string
+          description: "Wind speed for the period.\nThis property as an string value is deprecated. Future versions will express this value as a quantitative value object. To make use of the future standard format now, set the \"forecast_wind_speed_qv\" feature flag on the request.\n"
+        windGust:
+          type: string
+          description: "Peak wind gust for the period.\nThis property as an string value is deprecated. Future versions will express this value as a quantitative value object. To make use of the future standard format now, set the \"forecast_wind_speed_qv\" feature flag on the request.\n"
+          nullable: true
+        windDirection:
+          enum:
+            - 'N'
+            - NNE
+            - NE
+            - ENE
+            - E
+            - ESE
+            - SE
+            - SSE
+            - S
+            - SSW
+            - SW
+            - WSW
+            - W
+            - WNW
+            - NW
+            - NNW
+          type: string
+          description: 'The prevailing direction of the wind for the period, using a 16-point compass.'
+        icon:
+          type: string
+          description: 'A link to an icon representing the forecast summary.'
+          format: uri
+          deprecated: true
+        shortForecast:
+          type: string
+          description: 'A brief textual forecast summary for the period.'
+        detailedForecast:
+          type: string
+          description: 'A detailed textual forecast for the period.'
+      description: "An object containing forecast information for a specific time period (generally 12-hour or 1-hour).\n"
+      additionalProperties: false
+    GridpointForecastUnits:
+      enum:
+        - us
+        - si
+      type: string
+      description: 'Denotes the units used in the textual portions of the forecast.'
+      default: us
+    QuantitativeValue:
+      type: object
+      properties:
+        value:
+          type: number
+          description: 'A measured value'
+          nullable: true
+        maxValue:
+          type: number
+          description: 'The maximum value of a range of measured values'
+        minValue:
+          type: number
+          description: 'The minimum value of a range of measured values'
+        unitCode:
+          $ref: '#/components/schemas/UnitOfMeasure'
+        qualityControl:
+          enum:
+            - Z
+            - C
+            - S
+            - V
+            - X
+            - Q
+            - G
+            - B
+            - T
+          type: string
+          description: "For values in observation records, the quality control flag from the MADIS system. The definitions of these flags can be found at https://madis.ncep.noaa.gov/madis_sfc_qc_notes.shtml\n"
+      description: "A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue\n"
+      additionalProperties: false
+    GeometryString:
+      type: string
+      description: 'A geometry represented in Well-Known Text (WKT) format.'
+      format: wkt
+      nullable: true
+    GridpointForecast:
+      type: object
+      properties:
+        '@context':
+          $ref: '#/components/schemas/JsonLdContext'
+        geometry:
+          $ref: '#/components/schemas/GeometryString'
+        units:
+          $ref: '#/components/schemas/GridpointForecastUnits'
+        forecastGenerator:
+          type: string
+          description: 'The internal generator class used to create the forecast text (used for NWS debugging).'
+        generatedAt:
+          type: string
+          description: 'The time this forecast data was generated.'
+          format: date-time
+        updateTime:
+          type: string
+          description: 'The last update time of the data this forecast was generated from.'
+          format: date-time
+        validTimes:
+          $ref: '#/components/schemas/ISO8601Interval'
+        elevation:
+          $ref: '#/components/schemas/QuantitativeValue'
+        periods:
+          type: array
+          items:
+            $ref: '#/components/schemas/GridpointForecastPeriod'
+          description: 'An array of forecast periods.'
+      description: 'A multi-day forecast for a 2.5km grid square.'
+      additionalProperties: false
+    GeoJsonFeature:
+      required:
+        - type
+        - geometry
+        - properties
+      type: object
+      properties:
+        '@context':
+          $ref: '#/components/schemas/JsonLdContext'
+        id:
+          type: string
+          format: uri
+        type:
+          enum:
+            - Feature
+          type: string
+        geometry:
+          $ref: '#/components/schemas/GeoJsonGeometryPolygon'
+        properties:
+          type: object
+      description: 'A GeoJSON feature. Please refer to IETF RFC 7946 for information on the GeoJSON format.'
+      additionalProperties: false
+
+    GeoJsonGeometryPolygon:
+      title: 'GeoJSON Polygon'
+      required:
+        - type
+        - coordinates
+      type: object
+      properties:
+        type:
+          enum:
+            - Polygon
+          type: string
+        coordinates:
+          $ref: '#/components/schemas/GeoJsonPolygon'
+        bbox:
+          $ref: '#/components/schemas/GeoJsonBoundingBox'
+
+    GeoJsonPolygon:
+      type: array
+      items:
+        minItems: 4
+        type: array
+        items:
+          $ref: '#/components/schemas/GeoJsonCoordinate'
+      description: 'A GeoJSON polygon. Please refer to IETF RFC 7946 for information on the GeoJSON format.'
+
+    GeoJsonBoundingBox:
+      minItems: 4
+      type: array
+      items:
+        type: number
+      description: 'A GeoJSON bounding box. Please refer to IETF RFC 7946 for information on the GeoJSON format.'
+
+    GeoJsonCoordinate:
+      minItems: 2
+      type: array
+      items:
+        type: number
+      description: 'A GeoJSON coordinate. Please refer to IETF RFC 7946 for information on the GeoJSON format.'
+
+    GridpointForecastGeoJson:
+      required:
+        - type
+        - geometry
+        - properties
+      type: object
+      properties:
+        '@context':
+          $ref: '#/components/schemas/JsonLdContext'
+        id:
+          type: string
+          format: uri
+        type:
+          enum:
+            - Feature
+          type: string
+        geometry:
+          $ref: '#/components/schemas/GeoJsonGeometryPolygon'
+        properties:
+          $ref: '#/components/schemas/GridpointForecast'
+      description: 'A GeoJSON feature. Please refer to IETF RFC 7946 for information on the GeoJSON format.'
+      additionalProperties: false
+    ProblemDetail:
+      required:
+        - type
+        - title
+        - status
+        - detail
+        - instance
+        - correlationId
+      type: object
+      properties:
+        type:
+          type: string
+          description: "A URI reference (RFC 3986) that identifies the problem type. This is only an identifier and is not necessarily a resolvable URL.\n"
+          format: uri
+          default: 'about:blank'
+          example: 'urn:noaa:nws:api:UnexpectedProblem'
+        title:
+          type: string
+          description: 'A short, human-readable summary of the problem type.'
+          example: 'Unexpected Problem'
+        status:
+          maximum: 999
+          minimum: 100
+          type: number
+          description: "The HTTP status code (RFC 7231, Section 6) generated by the origin server for this occurrence of the problem.\n"
+          example: 500
+        detail:
+          type: string
+          description: 'A human-readable explanation specific to this occurrence of the problem.'
+          example: 'An unexpected problem has occurred.'
+        instance:
+          type: string
+          description: "A URI reference (RFC 3986) that identifies the specific occurrence of the problem. This is only an identifier and is not necessarily a resolvable URL.\n"
+          format: uri
+          example: 'urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63'
+        correlationId:
+          type: string
+          description: "A unique identifier for the request, used for NWS debugging purposes. Please include this identifier with any correspondence to help us investigate your issue.\n"
+          example: 493c3a1d-f87e-407f-ae2c-24483f5aab63
+      description: 'Detail about an error. This document conforms to RFC 7807 (Problem Details for HTTP APIs).'
+      additionalProperties: true
+    UnitOfMeasure:
+      pattern: '^((wmo|uc|wmoUnit|nwsUnit):)?.*$'
+      type: string
+      description: "A string denoting a unit of measure, expressed in the format \"{unit}\" or \"{namespace}:{unit}\".\nUnits with the namespace \"wmo\" or \"wmoUnit\" are defined in the World Meteorological Organization Codes Registry at http://codes.wmo.int/common/unit and should be canonically resolvable to http://codes.wmo.int/common/unit/{unit}.\nUnits with the namespace \"nwsUnit\" are currently custom and do not align to any standard.\nUnits with no namespace or the namespace \"uc\" are compliant with the Unified Code for Units of Measure syntax defined at https://unitsofmeasure.org/. This also aligns with recent versions of the Geographic Markup Language (GML) standard, the IWXXM standard, and OGC Observations and Measurements v2.0 (ISO/DIS 19156).\nNamespaced units are considered deprecated. We will be aligning API to use the same standards as GML/IWXXM in the future.\n"
+  headers:
+    CorrelationId:
+      description: "A unique identifier for the request, used for NWS debugging purposes. Please include this identifier with any correspondence to help us investigate your issue.\n"
+      schema:
+        type: string
+    RequestId:
+      description: "A unique identifier for the request, used for NWS debugging purposes. Please include this identifier with any correspondence to help us investigate your issue.\n"
+      schema:
+        type: string
+    ServerId:
+      description: "The identifier of the server that generated the response, used for NWS debugging purposes. Please include this identifier with any correspondence to help us investigate your issue.\n"
+      schema:
+        type: string
+  responses:
+    GridpointForecast:
+      description: 'A forecast for a gridpoint.'
+      headers:
+        X-Correlation-Id:
+          $ref: '#/components/headers/CorrelationId'
+        X-Request-Id:
+          $ref: '#/components/headers/RequestId'
+        X-Server-Id:
+          $ref: '#/components/headers/ServerId'
+      content:
+        application/geo+json:
+          schema:
+            $ref: '#/components/schemas/GridpointForecastGeoJson'
+    Error:
+      description: 'An error response.'
+      headers:
+        X-Correlation-Id:
+          $ref: '#/components/headers/CorrelationId'
+        X-Request-Id:
+          $ref: '#/components/headers/RequestId'
+        X-Server-Id:
+          $ref: '#/components/headers/ServerId'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+  parameters:
+    GridpointWFO:
+      name: wfo
+      in: path
+      description: 'Forecast office ID'
+      required: true
+      schema:
+        $ref: '#/components/schemas/NWSForecastOfficeId'
+    GridpointX:
+      name: x
+      in: path
+      description: 'Forecast grid X coordinate'
+      required: true
+      schema:
+        minimum: 0
+        type: integer
+    GridpointY:
+      name: 'y'
+      in: path
+      description: 'Forecast grid Y coordinate'
+      required: true
+      schema:
+        minimum: 0
+        type: integer      
