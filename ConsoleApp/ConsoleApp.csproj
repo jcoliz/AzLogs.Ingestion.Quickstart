@@ -15,7 +15,7 @@
     <PackageReference Include="Azure.Identity" Version="1.13.0" />
     <PackageReference Include="Azure.Monitor.Ingestion" Version="1.1.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.4" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.2" />
     <PackageReference Include="NSwag.MSBuild" Version="14.1.0">
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 			<PrivateAssets>all</PrivateAssets>
