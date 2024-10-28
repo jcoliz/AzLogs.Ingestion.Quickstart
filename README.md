@@ -9,7 +9,7 @@ The sample retrieves weather forecasts from the U.S. [National Weather Service A
 
 Let's say we have some important data available in an external service, and we want some of that data in our Log Analytics Workspace. However, we don't control the external service, so we can't simply modify it to upload logs directly. What we can do instead is:
 
-* **Extract** the data using an Azure Function, then send to a Data Collection Endpoint, which will
+* **Extract** the data by calling the API it exposes, then send that data to a Data Collection Endpoint, which will
 * **Transform** it into our desired schema using the Data Collection Rule, and
 * **Load** it into a Log Analytics Workspace table.
 
@@ -108,7 +108,7 @@ OK. Uploaded status 204
 ## Verify data flow
 
 After observing that logs are sent successfully to Log Analytics from the client application logs, it's time to turn our attention
-to verifying the data has landed correctly in the service. Using the Azure Portal, navigate to the resource group you created above, e.g. `azlogs-ingestion`, then click into the Data Change Rule resource. In the navigation panel on the left, expand "Monitoring", then choose "Metrics". Click "Add Metric", then choose "Logs Ingestion Requests per Min". You should see a chart like the one below:
+to verifying the data has landed correctly in the service. Using the Azure Portal, navigate to the resource group you created above, e.g. `azlogs-ingestion-quickstart`, then click into the Data Change Rule resource. In the navigation panel on the left, expand "Monitoring", then choose "Metrics". Click "Add Metric", then choose "Logs Ingestion Requests per Min". You should see a chart like the one below:
 
 ![Data Change Rule Metrics](./docs/images/dcr-metrics.png)
 
@@ -124,7 +124,7 @@ If all is well, you will see a chart like the one below:
 
 ![Log Analytics Workspace Query](./docs/images/logs-query.png)
 
-## Next step: Production!
+## Next step: Production
 
 Congratulations, you have successfully ingested logs into a Log Analytics Workspace custom table using a Data Collection Rule!
 
