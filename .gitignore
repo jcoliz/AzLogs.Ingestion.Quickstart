@@ -13,6 +13,7 @@
 *.userosscache
 *.sln.docstates
 config.toml
+*.config.toml
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
