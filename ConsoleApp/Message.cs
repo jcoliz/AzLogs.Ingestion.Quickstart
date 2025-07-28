@@ -45,7 +45,7 @@ public class DecoyInfo
 
 public class MessageProperties
 {
-    public Guid? ReferenceId { get; set; }
+    public Guid? SessionId { get; set; }
     public string? Comment { get; set; }
 }
 

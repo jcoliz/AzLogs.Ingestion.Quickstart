@@ -2,6 +2,8 @@ namespace AzLogs.Ingestion;
 
 public static class MessageGenerator
 {
+    private static Guid SessionId { get; } = Guid.NewGuid();
+
     public static ICollection<MessageLine> GenerateMessages()
     {
         // Simulate message generation
@@ -22,7 +24,7 @@ public static class MessageGenerator
             Message = "Persistence detected on host",
             Properties = new MessageProperties
             {
-                ReferenceId = Guid.NewGuid(),
+                SessionId = SessionId,
                 Comment = "This is a sample comment"
             },
             Category = "SampleCategory",
