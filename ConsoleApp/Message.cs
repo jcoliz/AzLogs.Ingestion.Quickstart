@@ -25,7 +25,7 @@ public class MessageLine
 
 public class MitreTechnique
 {
-//    public MitreTactic Tactic { get; set; } = new();
+    public MitreTactic Tactic { get; set; } = new();
     public string Name { get; set; } = string.Empty;
     public string Id { get; set; } = string.Empty;
 }

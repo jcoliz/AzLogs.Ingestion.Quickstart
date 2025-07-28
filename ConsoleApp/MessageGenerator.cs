@@ -27,7 +27,7 @@ public static class MessageGenerator
             },
             Category = "SampleCategory",
             Severity = SeverityLevel.Debug,
-            Campaign = "Technique, no tactic",
+            Campaign = "Adding Mitre tactic",
             Decoy = new DecoyInfo
             {
                 Name = "SampleDecoy",
@@ -41,11 +41,11 @@ public static class MessageGenerator
             DestinationPort = "8080",
             MitreTechnique = new MitreTechnique
             {
-            /*    Tactic = new MitreTactic
+                Tactic = new MitreTactic
                 {
                     Name = MitreTacticName.Persistence,
                     Id = "TA0003"
-                },*/
+                },
                 Name = "SSH Authorized Keys",
                 Id = "T1059.003"
             },
