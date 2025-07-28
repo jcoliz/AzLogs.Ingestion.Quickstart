@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using AzLogs.Ingestion;
 using AzLogs.Ingestion.Options;
 using AzLogs.Ingestion.WeatherServiceTransport;
 using Azure.Identity;
@@ -22,13 +23,6 @@ try
     configuration.Bind(IdentityOptions.Section, idOptions);
 
     //
-    // Set up Weather Client to connect with source data
-    //
-
-    using var httpClient = new HttpClient();
-    var weatherClient = new WeatherClient(httpClient);
-
-    //
     // Set up Azure logs ingestion client to connect with logs ingestion endpoint
     //
 
@@ -49,12 +43,11 @@ try
     while(true)
     {
         //
-        // Fetch forecasts
+        // Generate messages
         //
 
-        var forecasts = await weatherClient.Gridpoint_ForecastAsync(NWSForecastOfficeId.SEW,124,69);
-
-        Console.WriteLine($"OK. Received {forecasts.Properties.Periods.Count} forecasts");
+        var messages = MessageGenerator.GenerateMessages();
+        Console.WriteLine($"OK. Generated {messages.Count} messages");
 
         //
         // Upload logs
@@ -64,7 +57,7 @@ try
         (
             logsOptions.DcrImmutableId,
             logsOptions.Stream, 
-            [forecasts.Properties.Periods.FirstOrDefault()]
+            [messages]
         );
 
         Console.WriteLine($"OK. Uploaded status {response.Status}");
