@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Dynamic;
+using System.Text.Json;
 using AzLogs.Ingestion;
 using AzLogs.Ingestion.Options;
 using AzLogs.Ingestion.WeatherServiceTransport;

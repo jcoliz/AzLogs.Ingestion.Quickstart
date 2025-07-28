@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace AzLogs.Ingestion;
 
 public class Message
@@ -7,7 +9,7 @@ public class Message
     public string MessageText { get; set; } = string.Empty;
     public MessageProperties Properties { get; set; }
     public string? Category { get; set; }
-    public string? Severity { get; set; }
+    public SeverityLevel? Severity { get; set; }
     public string? Campaign { get; set; }
     public DecoyInfo Decoy { get; set; }
     public string? DeviceEventClass { get; set; }
@@ -33,4 +35,15 @@ public class MessageProperties
 {
     public Guid? ReferenceId { get; set; }
     public string? Comment { get; set; }
+}
+
+[JsonConverter(typeof(JsonStringEnumConverter<SeverityLevel>))]
+public enum SeverityLevel
+{
+    Unknown,
+    Debug,
+    Low,
+    Medium,
+    High,
+    Critical
 }

@@ -26,7 +26,7 @@ public static class MessageGenerator
                 Comment = "This is a sample comment"
             },
             Category = "SampleCategory",
-            Severity = "High",
+            Severity = SeverityLevel.Debug,
             Campaign = "SampleCampaign",
             Decoy = new DecoyInfo
             {
