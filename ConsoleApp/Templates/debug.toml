@@ -1,7 +1,7 @@
 message = "Persistence detected on host"
 category = "SampleCategory"
 severity = "Debug"
-campaign = "Defined in TOML"
+campaign = "Templates.debug.toml"
 device_event_class = "SampleEventClass"
 source_host_name = "SampleSourceHost"
 source_host_id = "44444444-4444-4444-4444-444444444444"

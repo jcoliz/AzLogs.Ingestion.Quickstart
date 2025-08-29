@@ -7,23 +7,22 @@ public class MessageGenerator
 {
     private Guid SessionId { get; } = Guid.NewGuid();
 
-    private readonly MessageLine _debugMessageTemplate;
+    private readonly Dictionary<string, MessageLine> _messageTemplates = new();
+    private readonly string _debugMessageTemplateName = "Templates.debug.toml";
 
     public MessageGenerator(IFileProvider fileProvider)
     {
         // Use fileProvider to load message templates
 
-        var messageTemplate = fileProvider.GetFileInfo("Templates/MessageTemplate.toml");
-        if (messageTemplate.Exists)
+        // https://stackoverflow.com/questions/62107756/embeddedprovider-getdirectorycontents-returns-0-results
+        var directory = fileProvider.GetDirectoryContents("/");
+        foreach (var file in directory)
         {
-            using var stream = messageTemplate.CreateReadStream();
+            using var stream = file.CreateReadStream();
             using var reader = new StreamReader(stream);
             var toml = reader.ReadToEnd();
-            _debugMessageTemplate = Toml.ToModel<MessageLine>(toml) ?? throw new Exception("Unable to parse message template");
-        }
-        else
-        {
-            throw new FileNotFoundException("Message template not found", "Templates/MessageTemplate.toml");
+            var template = Toml.ToModel<MessageLine>(toml) ?? throw new Exception($"Unable to parse message template {file.Name}");
+            _messageTemplates[file.Name] = template;
         }
     }
     
@@ -40,7 +39,7 @@ public class MessageGenerator
 
     private MessageLine GenerateMessage()
     {
-        var result = _debugMessageTemplate;
+        var result = _messageTemplates[_debugMessageTemplateName];
         result.TimeOnClient = DateTimeOffset.UtcNow;
         result.Id = Guid.NewGuid().ToString();
         result.Properties.SessionId = SessionId;
