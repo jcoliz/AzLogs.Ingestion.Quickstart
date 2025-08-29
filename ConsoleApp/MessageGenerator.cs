@@ -7,6 +7,8 @@ public class MessageGenerator
 {
     private Guid SessionId { get; } = Guid.NewGuid();
 
+    private bool HasRunThisSession { get; set; } = false;
+
     private readonly Dictionary<string, MessageLine> _messageTemplates = new();
 
     public MessageGenerator(IFileProvider fileProvider)
@@ -34,11 +36,16 @@ public class MessageGenerator
         foreach (var template in _messageTemplates.Values)
         {
             var genProps = template.Properties.Generation;
-            if (genProps?.Interval == GenerationInterval.Cycle)
+            if (
+                (genProps?.Interval == GenerationInterval.Cycle)
+                ||
+                (genProps?.Interval == GenerationInterval.Session && !HasRunThisSession)
+            )
             {
-                messages.AddRange(Enumerable.Range(1, genProps.MessagesPerInterval).Select(x => GenerateMessage(template,x)));
+                messages.AddRange(Enumerable.Range(1, genProps.MessagesPerInterval).Select(x => GenerateMessage(template, x)));
             }
         }
+        HasRunThisSession = true;
         return messages;
     }
 
