@@ -1,4 +1,5 @@
 ﻿using System.Dynamic;
+using System.Reflection;
 using System.Text.Json;
 using AzLogs.Ingestion;
 using AzLogs.Ingestion.Options;
@@ -6,6 +7,7 @@ using AzLogs.Ingestion.WeatherServiceTransport;
 using Azure.Identity;
 using Azure.Monitor.Ingestion;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.FileProviders;
 
 try
 {
@@ -36,6 +38,14 @@ try
     var logsClient = new LogsIngestionClient(logsOptions.EndpointUri, credential);
 
     //
+    // Set up an instance of message generation logic
+    // Uses an embedded file provider to load templates from the assembly
+    //
+
+    var fileProvider = new EmbeddedFileProvider(Assembly.GetExecutingAssembly());
+    var messageGenerator = new MessageGenerator(fileProvider);
+
+    //
     // Loop until cancelled
     //
 
@@ -47,7 +57,7 @@ try
         // Generate messages
         //
 
-        var messages = MessageGenerator.GenerateMessages();
+        var messages = messageGenerator.GenerateMessages();
         Console.WriteLine($"OK. Generated {messages.Count} messages");
 
         //

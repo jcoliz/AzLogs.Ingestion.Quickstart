@@ -5,7 +5,7 @@ namespace AzLogs.Ingestion;
 public class MessageLine
 {
     public DateTimeOffset TimeOnClient { get; set; }
-    public Guid? Id { get; set; } = null;
+    public string? Id { get; set; } = null; // GUID changed to string to match template format
     public string Message { get; set; } = string.Empty;
     public MessageProperties Properties { get; set; } = new();
     public string? Category { get; set; }
@@ -15,7 +15,7 @@ public class MessageLine
     public string? DeviceEventClass { get; set; }
     public string? SourceAddress { get; set; }
     public string? SourceHostName { get; set; }
-    public Guid? SourceHostId { get; set; }
+    public string? SourceHostId { get; set; } // GUID changed to string to match template format
     public string? DestinationAddress { get; set; }
     public string? DestinationPort { get; set; }
     public MitreTechnique MitreTechnique { get; set; } = new();
@@ -40,7 +40,7 @@ public class DecoyInfo
 {
     public string Name { get; set; } = string.Empty;
     public DecoyType Type { get; set; }
-    public Guid Id { get; set; }
+    public string? Id { get; set; } = null; // GUID changed to string to match template format
 }
 
 public class MessageProperties

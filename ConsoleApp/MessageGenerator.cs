@@ -1,10 +1,27 @@
+using Microsoft.Extensions.FileProviders;
+using Tomlyn;
+
 namespace AzLogs.Ingestion;
 
-public static class MessageGenerator
+public class MessageGenerator
 {
-    private static Guid SessionId { get; } = Guid.NewGuid();
+    private Guid SessionId { get; } = Guid.NewGuid();
 
-    public static ICollection<MessageLine> GenerateMessages()
+    public MessageGenerator(IFileProvider fileProvider)
+    {
+        // Use fileProvider to load message templates
+
+        var messageTemplate = fileProvider.GetFileInfo("Templates/MessageTemplate.toml");
+        if (messageTemplate.Exists)
+        {
+            using var stream = messageTemplate.CreateReadStream();
+            using var reader = new StreamReader(stream);
+            var toml = reader.ReadToEnd();
+            var template = Toml.ToModel<MessageLine>(toml) ?? throw new Exception("Unable to parse message template");
+        }
+    }
+    
+    public ICollection<MessageLine> GenerateMessages()
     {
         // Simulate message generation
         var messages = new List<MessageLine>();
@@ -15,12 +32,12 @@ public static class MessageGenerator
         return messages;
     }
 
-    private static MessageLine GenerateMessage()
+    private MessageLine GenerateMessage()
     {
         return new MessageLine
         {
             TimeOnClient = DateTimeOffset.UtcNow,
-            Id = Guid.NewGuid(),
+            Id = Guid.NewGuid().ToString(),
             Message = "Persistence detected on host",
             Properties = new MessageProperties
             {
@@ -34,11 +51,11 @@ public static class MessageGenerator
             {
                 Name = "SampleDecoy",
                 Type = DecoyType.NetworkDevice,
-                Id = Guid.NewGuid()
+                Id = Guid.NewGuid().ToString()
             },
             DeviceEventClass = "SampleEventClass",
             SourceHostName = "SampleSourceHost",
-            SourceHostId = Guid.NewGuid(),
+            SourceHostId = Guid.NewGuid().ToString(),
             DestinationAddress = "SampleDestinationAddress",
             DestinationPort = "8080",
             MitreTechnique = new MitreTechnique
