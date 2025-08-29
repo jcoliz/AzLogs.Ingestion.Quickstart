@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace AzLogs.Ingestion;
 
-public class MessageLine
+public record MessageLine
 {
     public DateTimeOffset TimeOnClient { get; set; }
     public string? Id { get; set; } = null; // GUID changed to string to match template format
@@ -23,30 +23,38 @@ public class MessageLine
     public string? User { get; set; }
 }
 
-public class MitreTechnique
+public record MitreTechnique
 {
     public MitreTactic Tactic { get; set; } = new();
     public string Name { get; set; } = string.Empty;
     public string Id { get; set; } = string.Empty;
 }
 
-public class MitreTactic
+public record MitreTactic
 {
     public MitreTacticName Name { get; set; }
     public string Id { get; set; } = string.Empty;
 }
 
-public class DecoyInfo
+public record DecoyInfo
 {
     public string Name { get; set; } = string.Empty;
     public DecoyType Type { get; set; }
     public string? Id { get; set; } = null; // GUID changed to string to match template format
 }
 
-public class MessageProperties
+public record MessageProperties
 {
     public Guid? SessionId { get; set; }
     public string? Comment { get; set; }
+    public int SequenceNumber { get; set; }
+    public MessageGenerationProperties? Generation { get; set; }
+}
+
+public record MessageGenerationProperties
+{
+    public int MessagesPerInterval { get; set; } = 10;
+    public GenerationInterval Interval { get; set; } = GenerationInterval.Cycle;
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter<SeverityLevel>))]
@@ -92,4 +100,12 @@ public enum MitreTacticName
     Exfiltration,
     CommandAndControl,
     Impact
+}
+
+[JsonConverter(typeof(JsonStringEnumConverter<GenerationInterval>))]
+public enum GenerationInterval
+{
+    Never,
+    Session,
+    Cycle,
 }

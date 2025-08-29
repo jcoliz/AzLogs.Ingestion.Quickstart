@@ -8,7 +8,6 @@ public class MessageGenerator
     private Guid SessionId { get; } = Guid.NewGuid();
 
     private readonly Dictionary<string, MessageLine> _messageTemplates = new();
-    private readonly string _debugMessageTemplateName = "Templates.debug.toml";
 
     public MessageGenerator(IFileProvider fileProvider)
     {
@@ -28,22 +27,30 @@ public class MessageGenerator
     
     public ICollection<MessageLine> GenerateMessages()
     {
-        // Simulate message generation
         var messages = new List<MessageLine>();
-        for (int i = 0; i < 10; i++)
+
+        foreach (var template in _messageTemplates.Values)
         {
-            messages.Add(GenerateMessage());
+            var genProps = template.Properties.Generation;
+            if (genProps?.Interval == GenerationInterval.Cycle)
+            {
+                messages.AddRange(Enumerable.Range(1, genProps.MessagesPerInterval).Select(x => GenerateMessage(template,x)));
+            }
         }
         return messages;
     }
 
-    private MessageLine GenerateMessage()
+    private MessageLine GenerateMessage(MessageLine template, int SequenceNumber)
     {
-        var result = _messageTemplates[_debugMessageTemplateName];
-        result.TimeOnClient = DateTimeOffset.UtcNow;
-        result.Id = Guid.NewGuid().ToString();
-        result.Properties.SessionId = SessionId;
-
-        return result;
-    }
+        return template with
+        {
+            TimeOnClient = DateTimeOffset.UtcNow,
+            Id = Guid.NewGuid().ToString(),
+            Properties = template.Properties with
+            {
+                SessionId = SessionId,
+                SequenceNumber = SequenceNumber
+            }
+        };
+   }
 }
