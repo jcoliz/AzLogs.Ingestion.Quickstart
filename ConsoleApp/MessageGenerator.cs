@@ -7,6 +7,8 @@ public class MessageGenerator
 {
     private Guid SessionId { get; } = Guid.NewGuid();
 
+    private readonly MessageLine _debugMessageTemplate;
+
     public MessageGenerator(IFileProvider fileProvider)
     {
         // Use fileProvider to load message templates
@@ -17,7 +19,11 @@ public class MessageGenerator
             using var stream = messageTemplate.CreateReadStream();
             using var reader = new StreamReader(stream);
             var toml = reader.ReadToEnd();
-            var template = Toml.ToModel<MessageLine>(toml) ?? throw new Exception("Unable to parse message template");
+            _debugMessageTemplate = Toml.ToModel<MessageLine>(toml) ?? throw new Exception("Unable to parse message template");
+        }
+        else
+        {
+            throw new FileNotFoundException("Message template not found", "Templates/MessageTemplate.toml");
         }
     }
     
@@ -34,42 +40,11 @@ public class MessageGenerator
 
     private MessageLine GenerateMessage()
     {
-        return new MessageLine
-        {
-            TimeOnClient = DateTimeOffset.UtcNow,
-            Id = Guid.NewGuid().ToString(),
-            Message = "Persistence detected on host",
-            Properties = new MessageProperties
-            {
-                SessionId = SessionId,
-                Comment = "This is a sample comment"
-            },
-            Category = "SampleCategory",
-            Severity = SeverityLevel.Debug,
-            Campaign = "Adding Mitre tactic",
-            Decoy = new DecoyInfo
-            {
-                Name = "SampleDecoy",
-                Type = DecoyType.NetworkDevice,
-                Id = Guid.NewGuid().ToString()
-            },
-            DeviceEventClass = "SampleEventClass",
-            SourceHostName = "SampleSourceHost",
-            SourceHostId = Guid.NewGuid().ToString(),
-            DestinationAddress = "SampleDestinationAddress",
-            DestinationPort = "8080",
-            MitreTechnique = new MitreTechnique
-            {
-                Tactic = new MitreTactic
-                {
-                    Name = MitreTacticName.Persistence,
-                    Id = "TA0003"
-                },
-                Name = "SSH Authorized Keys",
-                Id = "T1059.003"
-            },
-            FileHash = "abc123hash",
-            User = "sampleuser"
-        };
+        var result = _debugMessageTemplate;
+        result.TimeOnClient = DateTimeOffset.UtcNow;
+        result.Id = Guid.NewGuid().ToString();
+        result.Properties.SessionId = SessionId;
+
+        return result;
     }
 }
