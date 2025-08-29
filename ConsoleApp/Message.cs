@@ -75,6 +75,7 @@ public enum DecoyType
     VirtualMachine,
     NetworkDevice,
     Application,
+    Cluster,
     Database,
     File,
     FileShare,
