@@ -21,10 +21,12 @@ public class MessageGenerator
             using var reader = new StreamReader(stream);
             var toml = reader.ReadToEnd();
             var template = Toml.ToModel<MessageLine>(toml) ?? throw new Exception($"Unable to parse message template {file.Name}");
+            template.Properties ??= new MessageProperties();
+            template.Properties.Comment = file.Name;
             _messageTemplates[file.Name] = template;
         }
     }
-    
+
     public ICollection<MessageLine> GenerateMessages()
     {
         var messages = new List<MessageLine>();

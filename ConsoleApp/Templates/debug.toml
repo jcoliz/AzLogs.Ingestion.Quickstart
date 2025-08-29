@@ -10,9 +10,6 @@ destination_port = "8080"
 file_hash = "abc123hash"
 user = "sampleuser"
 
-[properties]
-comment = "This is a sample comment"
-
 [properties.generation]
 messages_per_interval = 5
 interval = "Cycle"
