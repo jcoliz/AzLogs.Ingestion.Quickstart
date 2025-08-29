@@ -39,6 +39,7 @@ public record MitreTactic
 public record DecoyInfo
 {
     public string Name { get; set; } = string.Empty;
+    public string Comment { get; set; } = string.Empty;
     public DecoyType Type { get; set; }
     public string? Id { get; set; } = null; // GUID changed to string to match template format
 }
