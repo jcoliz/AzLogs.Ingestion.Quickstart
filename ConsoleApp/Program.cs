@@ -49,9 +49,10 @@ try
     // Loop until cancelled
     //
 
+    var timer = new BackOffTimer(TimeSpan.FromSeconds(2), TimeSpan.FromMinutes(30), 1.3);
     Console.WriteLine("Press Ctrl-C to exit");
-
-    while(true)
+    
+    while (true)
     {
         //
         // Generate messages
@@ -67,17 +68,17 @@ try
         var response = await logsClient.UploadAsync
         (
             logsOptions.DcrImmutableId,
-            logsOptions.Stream, 
+            logsOptions.Stream,
             [messages]
         );
 
         Console.WriteLine($"OK. Uploaded status {response.Status}");
 
         //
-        // Wait
+        // Wait for next interval
         //
 
-        await Task.Delay(TimeSpan.FromSeconds(5));
+        await timer.WaitAsync();
     }
 }
 catch (ApiException<ProblemDetail> ex)
