@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using AzLogs.Ingestion.Generators;
 using AzLogs.Ingestion.Options;
 using AzLogs.Ingestion.WeatherServiceTransport;
 using Azure.Identity;
@@ -49,12 +50,10 @@ try
     while(true)
     {
         //
-        // Fetch forecasts
+        // Genarate ABAP Audit Log data
         //
 
-        var forecasts = await weatherClient.Gridpoint_ForecastAsync(NWSForecastOfficeId.SEW,124,69);
-
-        Console.WriteLine($"OK. Received {forecasts.Properties.Periods.Count} forecasts");
+        var logs = Enumerable.Range(0, 10).Select(i => ABAPAuditLog.CreateSample(i)).ToList();
 
         //
         // Upload logs
@@ -64,7 +63,7 @@ try
         (
             logsOptions.DcrImmutableId,
             logsOptions.Stream, 
-            [forecasts.Properties.Periods.FirstOrDefault()]
+            logs
         );
 
         Console.WriteLine($"OK. Uploaded status {response.Status}");
